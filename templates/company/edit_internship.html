@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Internship - SIMS{% endblock %}
+
+{% block dashboard_content %}
+<div class="mb-4">
+    <h2>Edit Internship Posting</h2>
+    <p class="text-muted">Modify job details, duration, stipend, or skills required</p>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="form-card">
+            <form action="{{ url_for('company.edit_internship', internship_id=internship.internship_id) }}" method="POST" class="needs-validation" novalidate>
+                
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="title" class="form-label">Internship Title</label>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ internship.title }}" required>
+                        <div class="invalid-feedback">Please enter the title.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="location" class="form-label">Job Location</label>
+                        <input type="text" class="form-control" id="location" name="location" value="{{ internship.location }}" required>
+                        <div class="invalid-feedback">Please enter the location.</div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="duration" class="form-label">Duration</label>
+                        <input type="text" class="form-control" id="duration" name="duration" value="{{ internship.duration or '' }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="stipend" class="form-label">Stipend / Salary (Per Month)</label>
+                        <input type="text" class="form-control" id="stipend" name="stipend" value="{{ internship.stipend or '' }}">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="skills_required" class="form-label">Skills Required (Comma-separated)</label>
+                    <input type="text" class="form-control" id="skills_required" name="skills_required" value="{{ internship.skills_required or '' }}">
+                    <div class="form-text">List technical skills key to this role. These are compared directly with candidate profiles.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Role Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="5" required>{{ internship.description }}</textarea>
+                    <div class="invalid-feedback">Please enter a description.</div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="requirements" class="form-label">Key Requirements / Eligibility</label>
+                    <textarea class="form-control" id="requirements" name="requirements" rows="4">{{ internship.requirements or '' }}</textarea>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary-custom">Update Posting</button>
+                    <a href="{{ url_for('company.list_internships') }}" class="btn btn-secondary-custom">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - SIMS{% endblock %}
+
+{% block dashboard_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1">My Student Profile</h2>
+        <p class="text-muted mb-0">Manage your credentials, bio, and resume details</p>
+    </div>
+    <div>
+        <a href="{{ url_for('student.edit_profile') }}" class="btn btn-primary-custom">
+            <i class="bi bi-pencil-square me-1"></i> Edit Profile
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <!-- Biography & Details -->
+        <div class="bg-white rounded border p-4 shadow-sm mb-4">
+            <h4 class="border-bottom pb-2 mb-3">Bio / Summary</h4>
+            {% if student.bio %}
+                <p style="white-space: pre-line; line-height: 1.6;">{{ student.bio }}</p>
+            {% else %}
+                <p class="text-muted italic">No bio written yet. Click 'Edit Profile' to add one.</p>
+            {% endif %}
+        </div>
+
+        <div class="bg-white rounded border p-4 shadow-sm">
+            <h4 class="border-bottom pb-2 mb-3">Technical Skills</h4>
+            {% if student.skills %}
+                <div class="d-flex flex-wrap">
+                    {% for skill in student.skills.split(',') %}
+                        <span class="skill-badge fs-6 px-3 py-2">{{ skill.strip() }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted italic">No skills listed yet. Add skills to match with internship postings.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <!-- Contact & Resume Widgets -->
+        <div class="bg-white rounded border p-4 shadow-sm mb-4">
+            <h4 class="border-bottom pb-2 mb-3">Contact Info</h4>
+            <div class="d-flex align-items-center mb-3">
+                <i class="bi bi-person text-muted fs-4 me-3"></i>
+                <div>
+                    <span class="text-muted d-block small">Full Name</span>
+                    <span class="fw-semibold">{{ student.name }}</span>
+                </div>
+            </div>
+            <div class="d-flex align-items-center">
+                <i class="bi bi-envelope text-muted fs-4 me-3"></i>
+                <div>
+                    <span class="text-muted d-block small">Email Address</span>
+                    <span class="fw-semibold">{{ student.email }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded border p-4 shadow-sm">
+            <h4 class="border-bottom pb-2 mb-3">Uploaded Resume</h4>
+            {% if student.resume_path %}
+                <div class="d-flex align-items-center gap-3 p-3 bg-light rounded mb-3">
+                    <i class="bi bi-file-earmark-pdf-fill text-danger fs-1"></i>
+                    <div style="overflow: hidden; text-overflow: ellipsis;">
+                        <span class="fw-semibold d-block text-truncate">{{ student.resume_name }}</span>
+                        <a href="/{{ student.resume_path }}" target="_blank" class="btn btn-sm btn-link p-0 text-decoration-none">
+                            <i class="bi bi-eye"></i> View File
+                        </a>
+                    </div>
+                </div>
+                <div class="alert alert-success py-2 px-3 mb-0">
+                    <small><i class="bi bi-check-circle-fill me-1"></i> Verification status: Verified</small>
+                </div>
+            {% else %}
+                <p class="text-muted small">No resume attached. Uploading your resume allows hiring entities to check details instantly.</p>
+                <a href="{{ url_for('student.edit_profile') }}" class="btn btn-sm btn-secondary-custom w-100">Attach Resume</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

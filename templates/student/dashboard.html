@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Dashboard - SIMS{% endblock %}
+
+{% block dashboard_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1">Student Dashboard</h2>
+        <p class="text-muted mb-0">Track and manage your internship lifecycle</p>
+    </div>
+    <div>
+        <a href="{{ url_for('student.list_internships') }}" class="btn btn-primary-custom">
+            <i class="bi bi-search me-1"></i> Find Internships
+        </a>
+    </div>
+</div>
+
+<!-- Metrics Cards Row -->
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="metric-card">
+            <div>
+                <p class="metric-title">My Applications</p>
+                <h3 class="metric-value">{{ applications|length }}</h3>
+            </div>
+            <div class="metric-icon-wrapper bg-blue-light">
+                <i class="bi bi-file-earmark-check"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="metric-card">
+            <div>
+                <p class="metric-title">Resume Scanning (UiPath)</p>
+                <h3 class="metric-value">
+                    {% if student.resume_path %}
+                        {% if verifications and verifications[0].status == 'Verified' %}
+                            Verified
+                        {% else %}
+                            Scanning
+                        {% endif %}
+                    {% else %}
+                        No Resume
+                    {% endif %}
+                </h3>
+            </div>
+            <div class="metric-icon-wrapper {% if student.resume_path %}bg-success-subtle text-success{% else %}bg-secondary-subtle text-secondary{% endif %}">
+                <i class="bi bi-robot"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="metric-card">
+            <div>
+                <p class="metric-title">Skills Recorded</p>
+                <h3 class="metric-value">
+                    {% if student.skills %}
+                        {{ student.skills.split(',')|length }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </h3>
+            </div>
+            <div class="metric-icon-wrapper bg-warning-subtle text-warning">
+                <i class="bi bi-patch-check"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Recommendations Section -->
+    <div class="col-lg-8">
+        <div class="bg-white rounded border p-4 shadow-sm mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="mb-0"><i class="bi bi-stars text-warning me-2"></i>Recommended for You</h4>
+                <small class="text-muted">Dynamic matching based on your profile skills</small>
+            </div>
+            
+            {% if not student.skills %}
+                <div class="alert alert-warning mb-0">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    We can't generate recommendations yet. Please <a href="{{ url_for('student.edit_profile') }}" class="alert-link">edit your profile</a> and enter your skills (e.g. Python, SQL, Bootstrap).
+                </div>
+            {% else %}
+                <div class="d-flex flex-column gap-3">
+                    {% for rec in recommendations %}
+                        <div class="border rounded p-3 hover-shadow-sm transition-all">
+                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                                <div>
+                                    <h5 class="mb-1"><a href="{{ url_for('student.internship_details', internship_id=rec.internship.internship_id) }}" class="text-decoration-none">{{ rec.internship.title }}</a></h5>
+                                    <p class="text-muted mb-2 small"><i class="bi bi-building me-1"></i>{{ rec.internship.company_name }} &bull; <i class="bi bi-geo-alt me-1"></i>{{ rec.internship.location }}</p>
+                                </div>
+                                <span class="badge bg-primary rounded-pill">{{ rec.score }}% Match</span>
+                            </div>
+                            <div class="small text-muted mb-2"><i class="bi bi-info-circle me-1"></i>{{ rec.reason }}</div>
+                            <div class="d-flex justify-content-between align-items-center mt-2 flex-wrap">
+                                <div>
+                                    {% if rec.internship.skills_required %}
+                                        {% for skill in rec.internship.skills_required.split(',') %}
+                                            <span class="badge bg-secondary-subtle text-secondary me-1" style="font-size: 0.75rem;">{{ skill.strip() }}</span>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <a href="{{ url_for('student.internship_details', internship_id=rec.internship.internship_id) }}" class="btn btn-sm btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Sidebar widgets -->
+    <div class="col-lg-4">
+        <!-- UiPath RPA scan results -->
+        <div class="bg-white rounded border p-4 shadow-sm mb-4">
+            <h4 class="mb-3"><i class="bi bi-robot text-primary me-2"></i>RPA Verification</h4>
+            
+            {% if not student.resume_path %}
+                <p class="text-muted small">No resume uploaded. Upload your CV to trigger automated credential scanning.</p>
+                <a href="{{ url_for('student.edit_profile') }}" class="btn btn-sm btn-secondary-custom w-100">Upload Resume</a>
+            {% else %}
+                <div class="d-flex align-items-center gap-3 p-2 bg-light rounded mb-3">
+                    <i class="bi bi-file-earmark-pdf-fill text-danger fs-3"></i>
+                    <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        <span class="fw-medium d-block text-truncate">{{ student.resume_name }}</span>
+                        <small class="text-muted">Document Attached</small>
+                    </div>
+                </div>
+                
+                <h6 class="small text-muted uppercase tracking-wider mb-2">Verification History</h6>
+                <div class="d-flex flex-column gap-2">
+                    {% for ver in verifications %}
+                        <div class="d-flex justify-content-between align-items-center p-2 border rounded">
+                            <div class="small">
+                                <span class="d-block fw-semibold">{{ ver.document_name }}</span>
+                                <small class="text-muted">{{ ver.verified_at }}</small>
+                            </div>
+                            <span class="badge-status {% if ver.status == 'Verified' %}status-verified{% else %}status-pending{% endif %}">
+                                {{ ver.status }}
+                            </span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Skill Gap Analysis box -->
+        <div class="bg-white rounded border p-4 shadow-sm">
+            <h4 class="mb-3"><i class="bi bi-graph-up-arrow text-success me-2"></i>Skills Profile</h4>
+            {% if student.skills %}
+                <div class="mb-3">
+                    {% for skill in student.skills.split(',') %}
+                        <span class="skill-badge">{{ skill.strip() }}</span>
+                    {% endfor %}
+                </div>
+                <a href="{{ url_for('student.edit_profile') }}" class="btn btn-sm btn-outline-secondary w-100">Edit Skills List</a>
+            {% else %}
+                <p class="text-muted small">Enter your technical skills list to unlock the recommendation matching engine.</p>
+                <a href="{{ url_for('student.edit_profile') }}" class="btn btn-sm btn-primary-custom w-100">Add Technical Skills</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block title %}Smart Internship Management System - Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="row align-items-center hero-section px-4 mb-5 shadow-sm">
+    <div class="col-lg-6 mb-4 mb-lg-0 px-md-5">
+        <h1 class="display-4 fw-bold text-white mb-3">Empowering Careers, Simplifying Internships</h1>
+        <p class="lead text-white-50 mb-4">Connect with leading organizations, automate document verifications, map skill gaps in real-time, and drive productivity on a single intelligent platform.</p>
+        <div class="d-flex gap-3 flex-wrap">
+            <a href="{{ url_for('auth.student_register') }}" class="btn btn-light btn-lg px-4 text-primary fw-semibold shadow-sm">
+                <i class="bi bi-mortarboard-fill me-2"></i>Apply as Student
+            </a>
+            <a href="{{ url_for('auth.company_register') }}" class="btn btn-outline-light btn-lg px-4 fw-semibold">
+                <i class="bi bi-building-fill me-2"></i>Hire Interns
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-6 px-md-5 text-center">
+        <!-- Dashboard Mockup/Visual Container -->
+        <div class="hero-card text-start">
+            <h5 class="text-white mb-3"><i class="bi bi-cpu-fill me-2 text-warning"></i>SIMS Intelligence Engine</h5>
+            <div class="p-3 bg-white bg-opacity-10 rounded border border-white border-opacity-10 mb-3">
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="text-white-50 small">UiPath Resume Scanning</span>
+                    <span class="badge bg-success text-white small">Active</span>
+                </div>
+                <div class="progress" style="height: 6px;">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%;"></div>
+                </div>
+            </div>
+            <div class="p-3 bg-white bg-opacity-10 rounded border border-white border-opacity-10 mb-3">
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="text-white-50 small">Skill Gap Analytics</span>
+                    <span class="badge bg-warning text-dark small">Syncing</span>
+                </div>
+                <div class="progress" style="height: 6px;">
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: 78%;"></div>
+                </div>
+            </div>
+            <div class="p-3 bg-white bg-opacity-10 rounded border border-white border-opacity-10">
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="text-white-50 small">Power BI Dashboard Analytics</span>
+                    <span class="badge bg-info text-dark small">Ready</span>
+                </div>
+                <div class="progress" style="height: 6px;">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: 90%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Three Portal Access Points -->
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="feature-card text-center h-100 d-flex flex-column justify-content-between">
+            <div>
+                <div class="feature-icon"><i class="bi bi-mortarboard"></i></div>
+                <h4>Student Portal</h4>
+                <p class="text-muted">Register, build your skills inventory, upload resumes, run auto-matching score tests, and apply to top internships.</p>
+            </div>
+            <div class="mt-4">
+                <a href="{{ url_for('auth.student_login') }}" class="btn btn-primary-custom w-100">Access Student Portal</a>
+                <div class="mt-2 text-center">
+                    <small class="text-muted">New student? <a href="{{ url_for('auth.student_register') }}" class="text-decoration-none">Register here</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="feature-card text-center h-100 d-flex flex-column justify-content-between">
+            <div>
+                <div class="feature-icon"><i class="bi bi-building"></i></div>
+                <h4>Company Portal</h4>
+                <p class="text-muted">Publish internship requirements, access candidate skill-gap reports, filter verified applications, and hire talent easily.</p>
+            </div>
+            <div class="mt-4">
+                <a href="{{ url_for('auth.company_login') }}" class="btn btn-primary-custom w-100">Access Company Portal</a>
+                <div class="mt-2 text-center">
+                    <small class="text-muted">New partner? <a href="{{ url_for('auth.company_register') }}" class="text-decoration-none">Register here</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="feature-card text-center h-100 d-flex flex-column justify-content-between">
+            <div>
+                <div class="feature-icon"><i class="bi bi-shield-lock text-danger"></i></div>
+                <h4>Admin Control Center</h4>
+                <p class="text-muted">Audit registrations, review internship listings, generate site-wide analytics metrics, and manage databases.</p>
+            </div>
+            <div class="mt-4">
+                <a href="{{ url_for('auth.admin_login') }}" class="btn btn-outline-danger w-100">Access Admin Portal</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="bg-white rounded border p-5 mb-5 shadow-sm">
+    <div class="text-center mb-5">
+        <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill uppercase mb-2">Our Capabilities</span>
+        <h2>Unified Platform Core Features</h2>
+        <p class="text-muted max-w-2xl mx-auto">Explore the technological tools embedded in our Internship Management workflow.</p>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+            <div class="p-3 border rounded text-center h-100">
+                <i class="bi bi-person-check-fill text-primary fs-3 mb-2 d-block"></i>
+                <h5 class="h6">Dual-DB Connection</h5>
+                <small class="text-muted">Designed for Snowflake cloud data warehouse and local SQLite configurations.</small>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="p-3 border rounded text-center h-100">
+                <i class="bi bi-activity text-success fs-3 mb-2 d-block"></i>
+                <h5 class="h6">Skill Match Matrix</h5>
+                <small class="text-muted">Dynamic comparison of candidate profiles vs. published job specifications.</small>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="p-3 border rounded text-center h-100">
+                <i class="bi bi-robot text-warning fs-3 mb-2 d-block"></i>
+                <h5 class="h6">UiPath Automation</h5>
+                <small class="text-muted">Background verification framework for scanning resume submissions.</small>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="p-3 border rounded text-center h-100">
+                <i class="bi bi-pie-chart-fill text-info fs-3 mb-2 d-block"></i>
+                <h5 class="h6">Power BI Embed</h5>
+                <small class="text-muted">Analytics templates and hooks targeting system-wide management reports.</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- About Section -->
+<div class="row align-items-center mb-5 py-3">
+    <div class="col-md-6 mb-4 mb-md-0">
+        <h3>About the Project</h3>
+        <p class="text-muted leading-relaxed">The Smart Internship Management System (SIMS) is an enterprise-ready MVC application facilitating recruitment processes for students and business entities.</p>
+        <p class="text-muted leading-relaxed">By embedding intelligent modules like UiPath RPA triggers, Snowflake data models, and analytical tools, SIMS scales easily from local university settings to cross-national corporate internship networks.</p>
+    </div>
+    <div class="col-md-6 text-center">
+        <i class="bi bi-diagram-3 text-primary" style="font-size: 8rem; opacity: 0.15;"></i>
+    </div>
+</div>
+{% endblock %}

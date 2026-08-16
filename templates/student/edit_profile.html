@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile - SIMS{% endblock %}
+
+{% block dashboard_content %}
+<div class="mb-4">
+    <h2>Edit Student Profile</h2>
+    <p class="text-muted">Update your resume, technical skills inventory, and summary</p>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="form-card">
+            <form action="{{ url_for('student.edit_profile') }}" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+                
+                <div class="mb-3">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ student.name }}" required>
+                    <div class="invalid-feedback">Please enter your name.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="bio" class="form-label">Professional Summary / Bio</label>
+                    <textarea class="form-control" id="bio" name="bio" rows="5" placeholder="Introduce yourself, target career domains, and projects...">{{ student.bio or '' }}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="skills" class="form-label">Skills (Comma-separated)</label>
+                    <input type="text" class="form-control" id="skills" name="skills" value="{{ student.skills or '' }}" placeholder="Python, SQL, JavaScript, Bootstrap 5">
+                    <div class="form-text">Separate skills with commas (e.g. SQL, Python, Excel). These will be used by our match analyzer.</div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="resume" class="form-label">Upload Resume (PDF, DOC, or DOCX)</label>
+                    <input type="file" class="form-control" id="resume" name="resume">
+                    {% if student.resume_path %}
+                        <div class="form-text text-success">
+                            <i class="bi bi-file-earmark-check-fill"></i> Current resume: {{ student.resume_name }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary-custom">Save Profile Changes</button>
+                    <a href="{{ url_for('student.profile') }}" class="btn btn-secondary-custom">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="bg-white rounded border p-4 shadow-sm mb-4">
+            <h5><i class="bi bi-robot text-primary me-2"></i>UiPath OCR Scan</h5>
+            <p class="text-muted small">When you upload a new resume file, the SIMS platform automatically triggers a background RPA Document Verification job.</p>
+            <p class="text-muted small">This checks file authenticity, analyzes academic credentials, and updates status flags directly on your dashboard.</p>
+        </div>
+
+        <div class="bg-white rounded border p-4 shadow-sm">
+            <h5><i class="bi bi-lightbulb text-warning me-2"></i>Matching Tip</h5>
+            <p class="text-muted small">Make sure to list matching skills as written in internship postings. For example, if a job demands <strong>"Bootstrap"</strong>, entering exactly <strong>"Bootstrap"</strong> increases your matching score.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

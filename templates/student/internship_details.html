@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ internship.title }} Details - SIMS{% endblock %}
+
+{% block dashboard_content %}
+<div class="mb-4">
+    <a href="{{ url_for('student.list_internships') }}" class="btn btn-sm btn-outline-secondary mb-3">
+        <i class="bi bi-arrow-left"></i> Back to Search
+    </a>
+    <h2>{{ internship.title }}</h2>
+    <p class="text-muted"><i class="bi bi-building me-1"></i>{{ internship.company_name }} &bull; <i class="bi bi-geo-alt me-1"></i>{{ internship.location }}</p>
+</div>
+
+<div class="row g-4">
+    <!-- Main details panel -->
+    <div class="col-lg-8">
+        <div class="bg-white rounded border p-4 shadow-sm mb-4">
+            <h4 class="border-bottom pb-2 mb-3">Description</h4>
+            <p style="white-space: pre-line; line-height: 1.6;">{{ internship.description }}</p>
+        </div>
+
+        {% if internship.requirements %}
+        <div class="bg-white rounded border p-4 shadow-sm mb-4">
+            <h4 class="border-bottom pb-2 mb-3">Requirements</h4>
+            <p style="white-space: pre-line; line-height: 1.6;">{{ internship.requirements }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Skill Gap Analysis section -->
+        <div class="bg-white rounded border p-4 shadow-sm">
+            <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                <h4 class="mb-0"><i class="bi bi-cpu-fill text-primary me-2"></i>Skill Match &amp; Recommendations</h4>
+                <span class="badge bg-primary fs-6 px-3 py-2 rounded-pill">{{ analysis.match_percentage }}% Match</span>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-6 border-end">
+                    <h5 class="h6 text-success fw-semibold"><i class="bi bi-check-circle me-1"></i>Skills You Have ({{ analysis.matching_skills|length }}):</h5>
+                    {% if analysis.matching_skills %}
+                        <div class="d-flex flex-wrap mt-2">
+                            {% for skill in analysis.matching_skills %}
+                                <span class="badge bg-success-subtle text-success me-1 mb-2" style="font-size: 0.8rem;">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted small">None of your skills match this posting.</p>
+                    {% endif %}
+                    
+                    <h5 class="h6 text-danger fw-semibold mt-3"><i class="bi bi-x-circle me-1"></i>Skills Missing ({{ analysis.missing_skills|length }}):</h5>
+                    {% if analysis.missing_skills %}
+                        <div class="d-flex flex-wrap mt-2">
+                            {% for skill in analysis.missing_skills %}
+                                <span class="badge bg-danger-subtle text-danger me-1 mb-2" style="font-size: 0.8rem;">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted small text-success">Great job! You have all the required skills.</p>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6">
+                    <h5 class="h6 fw-semibold mb-2"><i class="bi bi-journal-bookmark-fill text-warning me-1"></i>Recommended Learning Paths</h5>
+                    {% if analysis.recommendations %}
+                        <div class="list-group list-group-flush">
+                            {% for rec in analysis.recommendations %}
+                                <div class="list-group-item px-0 py-2">
+                                    <span class="d-block fw-medium small text-dark">{{ rec.skill }}</span>
+                                    {% for course in rec.courses %}
+                                        <small class="text-muted d-block mt-0.5"><i class="bi bi-play-circle me-1 text-primary"></i>{{ course }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted small mt-2">No gap identified. You are highly ready for this role!</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sidebar action widget -->
+    <div class="col-lg-4">
+        <div class="bg-white rounded border p-4 shadow-sm mb-4">
+            <h4 class="h5 border-bottom pb-2 mb-3">Job Details</h4>
+            
+            <div class="mb-3">
+                <span class="text-muted d-block small">Duration</span>
+                <span class="fw-semibold text-dark fs-6">{{ internship.duration or 'N/A' }}</span>
+            </div>
+            
+            <div class="mb-3">
+                <span class="text-muted d-block small">Stipend / Salary</span>
+                <span class="fw-semibold text-dark fs-6">{{ internship.stipend or 'Unpaid' }}</span>
+            </div>
+            
+            <div class="mb-4">
+                <span class="text-muted d-block small">Skills Demanded</span>
+                <div class="d-flex flex-wrap mt-1">
+                    {% if internship.skills_required %}
+                        {% for skill in internship.skills_required.split(',') %}
+                            <span class="badge bg-secondary-subtle text-secondary me-1 mb-1" style="font-size: 0.75rem;">{{ skill.strip() }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="text-muted small">No specific skills listed.</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if already_applied %}
+                <button class="btn btn-secondary w-100 py-2" disabled>
+                    <i class="bi bi-file-earmark-check"></i> Already Applied
+                </button>
+            {% else %}
+                <form action="{{ url_for('student.apply_internship', internship_id=internship.internship_id) }}" method="POST">
+                    <button type="submit" class="btn btn-primary-custom w-100 py-2">
+                        <i class="bi bi-send-fill me-1"></i> Apply Now
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+        
+        <div class="bg-white rounded border p-4 shadow-sm text-center">
+            <i class="bi bi-shield-check text-success" style="font-size: 3rem;"></i>
+            <h5 class="h6 mt-2">Safe Recruitment Guarantee</h5>
+            <p class="text-muted small mb-0">All corporate postings undergo company credential scans prior to publication.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

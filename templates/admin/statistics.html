@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}System Statistics - SIMS{% endblock %}
+
+{% block dashboard_content %}
+<div class="mb-4">
+    <h2>System Statistics &amp; Dashboards</h2>
+    <p class="text-muted">Real-time platform metrics and Power BI dashboard preview</p>
+</div>
+
+<!-- KPI Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="bg-white border rounded p-3 text-center shadow-sm">
+            <span class="text-muted small d-block uppercase">Students Registered</span>
+            <span class="fs-2 fw-bold text-primary">{{ stats.students }}</span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="bg-white border rounded p-3 text-center shadow-sm">
+            <span class="text-muted small d-block uppercase">Companies Enrolled</span>
+            <span class="fs-2 fw-bold text-info">{{ stats.companies }}</span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="bg-white border rounded p-3 text-center shadow-sm">
+            <span class="text-muted small d-block uppercase">Internships Listed</span>
+            <span class="fs-2 fw-bold text-success">{{ stats.internships }}</span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="bg-white border rounded p-3 text-center shadow-sm">
+            <span class="text-muted small d-block uppercase">Applications Submitted</span>
+            <span class="fs-2 fw-bold text-warning">{{ stats.applications }}</span>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <!-- Status Distribution -->
+    <div class="col-lg-4">
+        <div class="bg-white rounded border p-4 shadow-sm h-100">
+            <h4 class="mb-3"><i class="bi bi-pie-chart text-primary me-2"></i>Applications Status</h4>
+            <div class="d-flex flex-column gap-3 mt-4">
+                {% set status_colors = {'Applied': 'warning', 'Reviewed': 'info', 'Accepted': 'success', 'Rejected': 'danger'} %}
+                {% for status, count in stats.status_distribution.items() or [('Applied', 0), ('Reviewed', 0), ('Accepted', 0), ('Rejected', 0)] %}
+                    {% set pct = 0 %}
+                    {% if stats.applications > 0 %}
+                        {% set pct = ((count / stats.applications) * 100)|int %}
+                    {% endif %}
+                    <div>
+                        <div class="d-flex justify-content-between mb-1 small fw-medium">
+                            <span>{{ status }}</span>
+                            <span>{{ count }} ({{ pct }}%)</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-{{ status_colors.get(status, 'secondary') }}" role="progressbar" style="width: {{ pct }}%;"></div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Power BI Embedded Container -->
+    <div class="col-lg-8">
+        <div class="bg-white rounded border p-4 shadow-sm h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+                <h4 class="mb-0"><i class="bi bi-bar-chart-steps text-info me-2"></i>Power BI Analytics Dashboard</h4>
+                <span class="badge bg-secondary-subtle text-secondary">AD Integration Template</span>
+            </div>
+            
+            {% if not powerbi.enabled %}
+                <!-- Mock Dashboard Visual (the placeholder) -->
+                <div class="p-4 rounded border text-center bg-light" style="position: relative; overflow: hidden; min-height: 250px;">
+                    <!-- Blur filter overlay simulating a locked screen or load state -->
+                    <div class="d-flex flex-column justify-content-center align-items-center" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.85); z-index: 10;">
+                        <i class="bi bi-lock-fill text-muted fs-1 mb-2"></i>
+                        <h5 class="fw-semibold">Power BI Integration Placeholder</h5>
+                        <p class="text-muted small px-4 mb-3" style="max-width: 450px;">{{ powerbi.placeholder_message }}</p>
+                        <code class="small text-muted mb-2">Embed URL: {{ powerbi.embed_url }}</code>
+                    </div>
+
+                    <!-- Dummy visual charts under the overlay to look like a report dashboard -->
+                    <div class="row g-2 text-start opacity-25">
+                        <div class="col-6">
+                            <div class="p-2 border rounded bg-white">
+                                <span class="small text-muted">Weekly Applications</span>
+                                <div class="d-flex align-items-end gap-1 mt-3" style="height: 60px;">
+                                    <div class="bg-primary flex-fill" style="height: 30%;"></div>
+                                    <div class="bg-primary flex-fill" style="height: 50%;"></div>
+                                    <div class="bg-primary flex-fill" style="height: 80%;"></div>
+                                    <div class="bg-primary flex-fill" style="height: 60%;"></div>
+                                    <div class="bg-primary flex-fill" style="height: 90%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-2 border rounded bg-white">
+                                <span class="small text-muted">Verification Quality</span>
+                                <div class="d-flex align-items-end gap-1 mt-3" style="height: 60px;">
+                                    <div class="bg-success flex-fill" style="height: 70%;"></div>
+                                    <div class="bg-success flex-fill" style="height: 60%;"></div>
+                                    <div class="bg-success flex-fill" style="height: 85%;"></div>
+                                    <div class="bg-success flex-fill" style="height: 95%;"></div>
+                                    <div class="bg-success flex-fill" style="height: 100%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <!-- Real Embed code when enabled -->
+                <div class="ratio ratio-16x9">
+                    <iframe title="Power BI Dashboard" src="{{ powerbi.embed_url }}" frameborder="0" allowFullScreen="true"></iframe>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
